@@ -1,0 +1,70 @@
+---
+title: "Rejection Sampling"
+author: "Amy Chen"
+date: "October 16, 2018"
+output: html_document
+---
+
+###Overview
+Rejection sampling is a method of drawing points from a target distribution by sampling from an easier distribution and correcting the sampling probability through the rejection of some candidates.
+<br><br>
+Suppose we are interested in drawing points from $f(x)$. Let $g$ denote another density from which we know how to sample and for which we can easily calculate $g(x)$. Let $e$ denote an envelope such that $e(x) = \frac{g(x)}{\alpha}\geq f(x) \forall x$ for which $f(x) > 0$ for a given constant $\alpha \leq 1$.
+<br><br>
+Then rejection sampling can be completed in the following steps:
+
+1. Sample $Y$ ~ $g$
+2. Sample $U$ ~ $Unif(0,1)$
+3. Reject $Y$ if $U > \frac{f(Y)}{e(Y)}$, otherwise keep $Y$
+4. Repeat for desired sample size
+<br><br>
+
+###Demonstration
+**Suppose we would like to estimate $S= E[x^2]$ where $X$ has density proportional to $q(x) = e^ \frac{-|x|^3}{3}\ $**
+<br><br>
+
+####Target Function
+Let the target function be $f(x) = e^ \frac{-|x|^3}{3}\ $    
+<br>
+
+####Envelope Function
+Consider using the standard normal distribution $N(0,1)$  
+<center>$g = \frac{1}{\sqrt{2\pi}}e^{\frac{-x^2}{2}}$</center>  
+To determine $e$, we must find $\alpha$ such that $\frac{g(x)}{\alpha} > f(x)$. Choose $\alpha = 0.3$.
+
+```{r}
+f <- function(x) {         
+  exp(-abs(x^3)/3)
+}
+e <- function(x) {     
+  dnorm(x)/0.3
+}
+```
+
+```{r}
+curve(e(x), from = -2, to = 2)
+curve(f(x), add = T, col = "blue")
+```
+
+####Rejection Sampling
+Follow the steps listed above for a sample size of 100,000. Below are a few points drawn using this method.
+```{r}
+n = 100000
+y = rnorm(n, 0, 1)
+u = runif(n)
+x = y[u < f(y)/e(y)]
+head(x)
+```
+
+The acceptance ratio is
+```{r}
+length(x)/n
+```
+
+<br>
+
+####Calculate $E[x^2]$
+Now that we have our points from the sample, square each accepted x, and take the mean to get $E[x^2]$.
+```{r}
+mean(x^2)
+```
+
