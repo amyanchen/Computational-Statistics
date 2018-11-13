@@ -1,2 +1,2 @@
 # Computational Statistics
-Computational statistic projects for statistical inference using R programming
+Computational statistics projects for statistical inference using R programming
