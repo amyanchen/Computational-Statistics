@@ -41,8 +41,8 @@ e <- function(x) {
 ```
 
 ```{r}
-curve(e(x), from = -2, to = 2)
-curve(f(x), add = T, col = "blue")
+curve(e(x), from = -2, to = 2, col = "blue")
+curve(f(x), add = T)
 ```
 
 ####Rejection Sampling
